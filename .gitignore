@@ -39,3 +39,4 @@ Thumbs.db
 # Ghostty build artifacts
 /ghostty/GhosttyKit.xcframework/
 Cargo.lock
+build/libghostty/

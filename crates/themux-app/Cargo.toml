@@ -15,6 +15,7 @@ path = "src/main.rs"
 themux-core = { path = "../themux-core" }
 themux-socket = { path = "../themux-socket" }
 themux-notify = { path = "../themux-notify" }
+ghostty-sys = { path = "../ghostty-sys" }
 gtk4.workspace = true
 libadwaita = { workspace = true, optional = true }
 webkit2gtk.workspace = true

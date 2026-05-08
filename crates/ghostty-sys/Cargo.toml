@@ -1,0 +1,15 @@
+[package]
+name = "ghostty-sys"
+version = "0.1.0"
+edition = "2021"
+authors = ["themux"]
+description = "Rust FFI bindings for libghostty-vt"
+
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.69"
+
+[lib]
+name = "ghostty_sys"
+crate-type = ["lib", "cdylib"]
