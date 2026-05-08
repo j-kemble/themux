@@ -1,0 +1,53 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://themux.app/schemas/config.json",
+    "title": "themux Configuration",
+    "type": "object",
+    "properties": {
+        "actions": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/action" }
+        },
+        "commands": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/command" }
+        },
+        "shortcuts": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/shortcut" }
+        }
+    },
+    "$defs": {
+        "action": {
+            "type": "object",
+            "required": ["name", "command"],
+            "properties": {
+                "name": { "type": "string" },
+                "shortcut": { "$ref": "#/$defs/shortcut" },
+                "command": { "type": "string" },
+                "description": { "type": "string" }
+            }
+        },
+        "command": {
+            "type": "object",
+            "required": ["name", "command"],
+            "properties": {
+                "name": { "type": "string" },
+                "command": { "type": "string" },
+                "description": { "type": "string" },
+                "confirm": { "type": "boolean", "default": false }
+            }
+        },
+        "shortcut": {
+            "type": "object",
+            "required": ["key"],
+            "properties": {
+                "key": { "type": "string" },
+                "modifiers": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                }
+            }
+        }
+    }
+}

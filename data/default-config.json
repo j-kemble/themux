@@ -1,0 +1,10 @@
+{
+    "font_size": 13.0,
+    "font_family": "monospace",
+    "theme": "system",
+    "scrollback_limit": 10000,
+    "background_opacity": 1.0,
+    "unfocused_split_opacity": 0.7,
+    "cursor_style": "bar",
+    "confirm_close_window": true
+}

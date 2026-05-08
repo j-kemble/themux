@@ -1,0 +1,3 @@
+// SSH remote workspace CLI commands.
+
+// Stub — implemented when socket dispatch is wired.

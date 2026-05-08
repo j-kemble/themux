@@ -1,0 +1,89 @@
+/* themux GTK4 stylesheet */
+
+/* Sidebar */
+.sidebar {
+    background-color: @borders;
+    border-right: 1px solid @borders;
+}
+
+.sidebar-header {
+    font-weight: bold;
+    padding: 12px 16px 8px;
+    font-size: 0.9em;
+    color: @theme_fg_color;
+    opacity: 0.7;
+}
+
+.workspace-list {
+    background: transparent;
+}
+
+.workspace-list row {
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin: 2px 8px;
+}
+
+.workspace-list row:selected {
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+/* Content area */
+.content {
+    background-color: @theme_bg_color;
+}
+
+/* Terminal placeholder */
+.terminal-placeholder {
+    color: @theme_fg_color;
+    opacity: 0.4;
+    font-size: 1.1em;
+}
+
+/* Split pane dividers */
+paned separator {
+    background-color: @borders;
+    min-width: 1px;
+    min-height: 1px;
+}
+
+/* Tab bar */
+.tab-bar {
+    background-color: shade(@theme_bg_color, 0.95);
+    border-bottom: 1px solid @borders;
+    padding: 0;
+}
+
+.tab-bar button {
+    padding: 4px 16px;
+    border-radius: 0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 0.85em;
+}
+
+.tab-bar button:checked {
+    border-bottom-color: @theme_selected_bg_color;
+}
+
+/* Browser toolbar */
+.browser-toolbar {
+    padding: 4px 8px;
+    background-color: shade(@theme_bg_color, 0.97);
+    border-bottom: 1px solid @borders;
+}
+
+.browser-toolbar entry {
+    margin: 0 8px;
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+/* Notification ring */
+.notification-ring {
+    border: 2px solid @theme_selected_bg_color;
+    border-radius: 99px;
+    min-width: 8px;
+    min-height: 8px;
+}

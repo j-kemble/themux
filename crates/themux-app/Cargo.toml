@@ -1,0 +1,31 @@
+[package]
+name = "themux-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "themux-gui"
+path = "src/main.rs"
+
+[dependencies]
+themux-core = { path = "../themux-core" }
+themux-socket = { path = "../themux-socket" }
+themux-notify = { path = "../themux-notify" }
+gtk4.workspace = true
+libadwaita = { workspace = true, optional = true }
+webkit2gtk.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+anyhow.workspace = true
+dirs.workspace = true
+
+[features]
+default = []
+adwaita = ["libadwaita"]
+sentry = ["sentry"]

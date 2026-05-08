@@ -1,0 +1,40 @@
+# Build artifacts
+/target/
+/build/
+/dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Dependencies
+/ghostty/zig-cache/
+/ghostty/zig-out/
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config overrides
+*.local.toml
+*.local.json
+
+# Test artifacts
+/tests/output/
+/tests/__pycache__/
+
+# cmuxd-remote binary
+/daemon/cmuxd-remote/cmuxd-remote
+
+# Ghostty build artifacts
+/ghostty/GhosttyKit.xcframework/
