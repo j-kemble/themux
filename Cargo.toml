@@ -37,10 +37,10 @@ clap = { version = "4", features = ["derive"] }
 
 # GTK4 (used by themux-app)
 gtk4 = { version = "0.9", features = ["v4_16"] }
-libadwaita = { version = "0.7", optional = true }
+libadwaita = "0.7"
 
 # WebKitGTK
-webkit2gtk = { version = "0.12", features = ["v2_46"] }
+webkit2gtk = "2.0.2"
 
 # Desktop notifications
 notify-rust = "4"
@@ -63,7 +63,7 @@ lazy_static = "1"
 rusqlite = { version = "0.32", features = ["bundled"] }
 
 # Sentry
-sentry = { version = "0.35", optional = true }
+sentry = "0.35"
 
 # Shell words parsing
 shell-words = "1"

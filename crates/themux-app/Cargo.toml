@@ -28,4 +28,3 @@ dirs.workspace = true
 [features]
 default = []
 adwaita = ["libadwaita"]
-sentry = ["sentry"]
