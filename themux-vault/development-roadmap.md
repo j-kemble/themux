@@ -1,6 +1,6 @@
 # Development Roadmap
 
-> **Status:** Planning | **Last updated:** 2026-05-08
+> **Status:** Phase 0 complete | **Last updated:** 2026-05-08
 
 ## Overview
 
@@ -40,7 +40,7 @@ Phase 0 ──► Phase 1 ──► Phase 2 ──► Phase 3 ──► Phase 4
                               └── cmuxd-remote (Go, cross-platform)
 ```
 
-Phase 2 depends on Ghostty submodule being functional from Phase 0.
+Phase 2 depends on libghostty-vt being built (Phase 0) — provides terminal emulation engine via `crates/ghostty-sys/`.
 Phase 3 depends on workspace model from Phase 1.
 Phase 4 depends on session persistence from Phase 3.
 

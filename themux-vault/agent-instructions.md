@@ -21,12 +21,13 @@ themux is a **native Linux terminal multiplexer for AI coding agents** built in 
 
 | Crate | What goes there |
 |-------|----------------|
-| `themux-core` | Domain types (`Workspace`, `Pane`, `Panel`), config loading, session snapshot, split tree, notification store. **No GTK. No tokio. No platform deps.** |
+| `themux-core` | Domain types (`Workspace`, `Pane`, `Panel`), config loading, session snapshot, split tree, notification store. **No GTK. No platform deps.** |
 | `themux-socket` | Unix socket listener, V2 JSON-RPC dispatch, auth, event bus. Uses tokio. |
 | `themux-cli` | CLI binary. Parses args with clap, connects to socket, dispatches commands. |
 | `themux-agent` | Agent hook installer: creates tmux/terminal-notifier shims in `~/.themux/agent-bin/`. |
 | `themux-notify` | Desktop notification sender via notify-rust, OSC sequence parser. |
-| `themux-app` | GTK4 binary. Window, sidebar, terminal view, browser view. Uses gtk4 + webkit2gtk crates. |
+| `ghostty-sys` | Rust FFI bindings to libghostty-vt (auto-generated via bindgen). Depends on `build/libghostty/` being built first. |
+| `themux-app` | GTK4 binary. Window, sidebar, terminal view, browser view. Uses `ghostty-sys` for terminal emulation. |
 
 **If you're not sure where code goes:** see [[project-structure]].
 
@@ -52,6 +53,7 @@ chore: update Cargo.toml dependencies
 
 ## Before Submitting
 
+- [ ] `./scripts/build-libghostty.sh` passes (if ghostty source changed)
 - [ ] `cargo fmt --all` passes
 - [ ] `cargo clippy --workspace -- -D warnings` passes
 - [ ] `cargo test --workspace` passes
@@ -60,7 +62,6 @@ chore: update Cargo.toml dependencies
 - [ ] Relevant phase checklist updated
 - [ ] No `unwrap()` in library code
 - [ ] No GTK deps in `themux-core`
-- [ ] No tokio deps in `themux-core`
 
 ## Common Tasks
 

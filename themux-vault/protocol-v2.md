@@ -211,15 +211,14 @@ Client must handle this without disconnecting.
 
 ## Current Implementation Status
 
-This note documents the target V2 contract. The current scaffold implements only a small subset:
+Phase 0 implements the following:
 
-- `crates/themux-socket/src/protocol/v2.rs` currently dispatches `system.ping`, `system.identify`, `system.capabilities`, `workspace.list`, `workspace.create`, `surface.create`, and `surface.send_text`.
-- `workspace.create` and `surface.create` currently return stub IDs.
-- `crates/themux-socket/src/server.rs` does not yet call the full V2 dispatcher for incoming socket lines.
-- `crates/themux-cli/src/main.rs` parses the CLI but still needs socket connection and command dispatch wiring.
-- Browser, auth, settings, events, VM, markdown, and most workspace/pane/surface methods remain planned by phase.
+- `crates/themux-socket/src/protocol/v2.rs` dispatches `system.ping`, `system.identify`, `system.capabilities`, `workspace.list` (stub), `workspace.create` (stub), `surface.create` (stub), `surface.send_text` (stub).
+- `crates/themux-socket/src/server.rs` parses incoming JSON-RPC requests and calls through to the V2 dispatcher.
+- `crates/themux-cli/src/main.rs` connects to the socket and dispatches ping/version/capabilities/identify commands.
+- Phase 0 exit criteria met: `system.ping`, `system.identify`, `system.capabilities` return proper responses; unknown methods return `method_not_found`.
 
-Update this section whenever implementation catches up with the target method index.
+Remaining methods (workspace, pane, surface, browser, notification, etc.) are planned by phase per the method index above.
 
 ## Error Codes
 

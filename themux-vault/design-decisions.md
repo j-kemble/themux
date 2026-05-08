@@ -21,7 +21,7 @@
 **Decision:** Use GTK4 for the UI, not Qt.
 
 **Rationale:**
-- Ghostty already uses GTK4 on Linux — we can reuse its terminal widget directly
+- Ghostty (libghostty-vt) targets GTK4 on Linux — compatible rendering pipeline
 - WebKitGTK integrates naturally (no QtWebEngine bloat)
 - libadwaita provides modern GNOME styling out of the box
 - Smaller dependency footprint than Qt
@@ -54,7 +54,7 @@
 
 ## 5. Cargo Workspace over Single Crate
 
-**Decision:** 6 crates instead of one monolith.
+**Decision:** 7 crates instead of one monolith.
 
 **Rationale:**
 - Compile times: only rebuild what changed
@@ -62,15 +62,18 @@
 - Clear API boundaries between components
 - Each crate has a single responsibility
 
-## 6. Ghostty as Submodule (Not Vendored)
+## 6. Ghostty: Vendored libghostty-vt (Not Full GTK App)
 
-**Decision:** Git submodule for Ghostty, not vendored source.
+**Decision:** Use libghostty-vt (core terminal emulation library) via vendored source, not the full Ghostty GTK application.
 
 **Rationale:**
-- Easier to track upstream changes
-- Clear attribution and licensing
-- Can switch to upstream ghostty-org/ghostty instead of cmux's fork
-- Avoids bloating the repo with Zig/C source
+- cmux uses GhosttyKit (the core library), not the full Ghostty app — themux follows the same pattern
+- Full Ghostty source includes macOS app, GTK runtime, font rendering, GPU renderer, CLI, etc. — none of which we need
+- Vendoring allows us to trim the source to only what libghostty-vt requires (~3.9MB of source vs 38MB full)
+- `zig build -Demit-lib-vt` produces libghostty-vt.so with a clean C API
+- No submodule complexity — source is committed directly and can be rebuilt deterministically
+
+**Trade-off:** Manual updates needed to sync with upstream Ghostty changes. But since we only use the VT library (which is stable), upstream updates are infrequent.
 
 ## 7. cmuxd-remote Reused As-Is
 
@@ -98,9 +101,10 @@
 | Electron app | Performance, memory, native feel |
 | Rewrite cmuxd-remote in Rust | No benefit, adds risk |
 | Single monolithic crate | Slow compile, poor separation |
-| Vendored Ghostty source | Maintenance burden, attribution |
-| Qt instead of GTK4 | Ghostty is GTK, WebKitGTK > QtWebEngine |
+| Ghostty as git submodule | Bloated repo, complex build chain, unused code |
+| Qt instead of GTK4 | Ghostty targets GTK, WebKitGTK > QtWebEngine |
 | Swift on Linux | Immature GTK bindings, LLVM dependency |
+| Full Ghostty GTK app integration | Too much unwanted code (macOS, font, renderer, CLI) — only need libghostty-vt |
 
 ## Related
 

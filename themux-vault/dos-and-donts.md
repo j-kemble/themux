@@ -11,7 +11,10 @@
 - **DO** add new V2 methods to `themux-socket/src/protocol/v2.rs` first
 - **DO** use `thiserror` for library error types, `anyhow` for binary `main()`
 - **DO** wrap all GTK code behind `themux-app/src/ui/` module boundaries
-- **DO** use git submodules for Ghostty — never vendor the source
+- **DO** keep Ghostty changes in `ghostty/src/` to only what libghostty-vt needs
+- **DO** run `./scripts/build-libghostty.sh` before `cargo build` when ghostty source changes
+- **DO** use `#![allow(non_camel_case_types)]` in ghostty-sys for C API compatibility
+- **DO** keep Ghostty changes focused on libghostty-vt — avoid pulling in full upstream features
 - **DO** write protocol tests in Python before implementing new socket methods
 - **DO** serialize workspace state with serde — it's the session persistence format
 - **DO** use UUIDs for all domain object IDs (workspace, pane, panel)
@@ -42,10 +45,9 @@
 ### Architecture
 
 - **DON'T** add GTK imports to `themux-core` — violates purity rule
-- **DON'T** add tokio to `themux-core` — keep it synchronous
 - **DON'T** create circular crate dependencies — always `app` → `socket` → `core`
 - **DON'T** bypass the V2 protocol for internal communication — use the socket
-- **DON'T** vendor third-party code — use git submodules or Cargo deps
+- **DON'T** modify `ghostty/` source except for libghostty-vt build fixes
 - **DON'T** use platform-specific APIs outside `themux-app` and `themux-notify`
 
 ### Process

@@ -1,18 +1,18 @@
 # Project Structure
 
-> **Status:** Reference | **Last updated:** 2026-05-08
+> **Status:** Reference | **Last updated:** 2026-05-08 (updated after Phase 0)
 
 ## Top-Level Layout
 
 ```
 themux/
 ├── cmuxaltprd.md              # Original Linux port PRD
-├── Cargo.toml                 # Workspace root (6 crates)
+├── Cargo.toml                 # Workspace root (7 crates)
 ├── Makefile                   # Build orchestration
 ├── README.md                  # Project overview
 ├── LICENSE                    # GPL-3.0-or-later
 ├── .gitignore
-├── .gitmodules                # Ghostty submodule
+├── .gitmodules                # Ghostty submodule (legacy — ghostty now vendored)
 │
 ├── crates/
 │   ├── themux-core/           # Pure data models + business logic
@@ -29,14 +29,14 @@ themux/
 │   ├── themux-socket/         # Unix socket server + V2 protocol
 │   │   ├── src/
 │   │   │   ├── lib.rs
-│   │   │   ├── server.rs      # Unix listener, auth, connection handling
+│   │   │   ├── server.rs      # Unix listener, auth, V2 dispatch
 │   │   │   ├── protocol/      # V2 dispatch, auth, streaming
 │   │   │   └── event_bus.rs   # Ring buffer event system
 │   │   └── Cargo.toml
 │   │
 │   ├── themux-cli/            # CLI binary (the `themux` command)
 │   │   ├── src/
-│   │   │   ├── main.rs        # Clap CLI definition (~80 commands)
+│   │   │   ├── main.rs        # Clap CLI definition + socket dispatch
 │   │   │   ├── commands/      # Per-domain command stubs
 │   │   │   ├── shell.rs       # POSIX shell quoting
 │   │   │   └── tmux_compat.rs # Tmux command translation layer
@@ -57,20 +57,40 @@ themux/
 │   │   │   └── notification.rs
 │   │   └── Cargo.toml
 │   │
+│   ├── ghostty-sys/           # Rust FFI bindings to libghostty-vt
+│   │   ├── src/
+│   │   │   └── lib.rs         # Re-exports bindgen-generated bindings
+│   │   ├── build.rs            # bindgen + header path config
+│   │   └── Cargo.toml
+│   │
 │   └── themux-app/            # GTK4 application binary
 │       ├── src/
 │       │   ├── main.rs        # Entry point, GTK app init
 │       │   ├── app.rs         # Window builder, sidebar, content
-│       │   └── ui/            # Sidebar, content, terminal, browser, panels
-│       ├── build.rs
+│       │   ├── ui/            # Sidebar, content, terminal, browser, panels
+│       │   │   ├── terminal_view.rs  # GTK widget holding Ghostty terminal
+│       │   │   ├── terminal.rs       # TerminalWidget — libghostty-vt wrapper
+│       │   │   ├── mod.rs
+│       │   │   └── ...
+│       │   └── ...
+│       ├── build.rs            # Links libghostty-vt + sets include path
 │       └── Cargo.toml
+│
+├── ghostty/                   # Vendored Ghostty source (libghostty-vt only)
+│   ├── build.zig              # Zig build system
+│   ├── build.zig.zon          # Zig dependency manifest
+│   └── src/                   # Source (terminal emulation core only)
+│
+├── build/                     # Build artifacts
+│   └── libghostty/            # libghostty-vt.so + headers
+│       ├── lib/
+│       └── include/
 │
 ├── ui/                        # GTK4 resource files
 │   ├── themux.css             # Application stylesheet
 │   └── themux.gresource.xml   # GResource manifest
 │
-├── ghostty/                   # Ghostty submodule directory (currently empty until initialized)
-├── daemon/                    # cmuxd-remote Go daemon slot (README present; daemon source not copied yet)
+├── daemon/                    # cmuxd-remote Go daemon slot (not yet populated)
 │
 ├── data/
 │   └── default-config.json    # Bundled default config
@@ -81,14 +101,15 @@ themux/
 │   └── contributing.md        # Contributor guide
 │
 ├── scripts/
-│   ├── setup.sh               # Full project setup
+│   ├── setup.sh               # Full project setup (legacy)
 │   ├── build.sh               # Build with mode selection
+│   ├── build-libghostty.sh    # Build libghostty-vt .so + headers
 │   ├── run.sh                 # Build + launch
 │   └── run-tests.sh           # Rust + Python tests
 │
 ├── tests/                     # Python integration tests
 │   ├── conftest.py            # Socket connection fixture
-│   ├── requirements.txt       # pytest, websockets
+│   ├── requirements.txt       # pytest
 │   ├── test_v2_protocol.py    # System ping, identify, capabilities
 │   ├── test_workspace_crud.py # Workspace create/list
 │   ├── test_browser_api.py    # Browser automation protocol
@@ -102,23 +123,26 @@ themux/
 
 | Crate | Responsibility | Deps |
 |-------|---------------|------|
-| `themux-core` | Domain models, config, session, layout | serde, uuid, chrono, rusqlite |
-| `themux-socket` | Socket server, V2 dispatch, event bus | core, tokio, hmac, sha2 |
+| `themux-core` | Domain models, config, session, layout | serde, uuid, chrono, rusqlite, tokio |
+| `themux-socket` | Socket server, V2 dispatch, event bus | core, tokio, hmac, sha2, rand |
 | `themux-cli` | CLI binary, ~80 commands, tmux compat | core, socket, agent, clap |
 | `themux-agent` | Agent hooks, shim installer, vault | core |
 | `themux-notify` | Desktop notifications, OSC parser | core, notify-rust |
-| `themux-app` | GTK4 GUI binary | core, socket, notify, gtk4, webkit2gtk |
+| `ghostty-sys` | libghostty-vt FFI bindings | bindgen (build) |
+| `themux-app` | GTK4 GUI binary + Ghostty terminal | core, socket, notify, ghostty-sys, gtk4, webkit2gtk |
 
 ## Current Setup Status
 
-As of 2026-05-08, the repository scaffold exists but is not yet fully initialized:
+As of 2026-05-08 (end of Phase 0):
 
-- No `.git/` directory is present in `/home/josh/Projects/themux`, so `git status` and `git submodule status` do not work yet.
-- `.gitmodules` declares the `ghostty` submodule, but `ghostty/` is currently empty and has no `build.zig`.
-- `daemon/cmuxd-remote/` is not present yet; only `daemon/README.md` documents how to copy it from cmux.
-- The CLI parses commands but `crates/themux-cli/src/main.rs` still has a TODO where socket dispatch should be wired.
-- `themux-socket` has partial/stub V2 dispatch only; see [[protocol-v2#Current Implementation Status]].
-- Several GTK/WebKit/Ghostty UI modules are placeholders until Phase 0 terminal integration starts.
+- Git repository initialized at `github.com/j-kemble/themux` (master branch)
+- Ghostty source vendored at `ghostty/` — trimmed to libghostty-vt only (terminal emulation core, no fonts/GTK/renderer)
+- `scripts/build-libghostty.sh` builds `libghostty-vt.so` + headers into `build/libghostty/`
+- `crates/ghostty-sys/` provides Rust FFI bindings via bindgen
+- CLI (`themux-cli`) has socket dispatch wired for ping/version/capabilities/identify
+- Socket server (`themux-socket`) has proper V2 JSON-RPC dispatch for system.* methods
+- `cargo check --workspace` passes with 0 errors
+- `daemon/cmuxd-remote/` is not yet present; daemon build targets will fail until populated
 
 ## Dependency Rules
 

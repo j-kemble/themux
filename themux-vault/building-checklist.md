@@ -6,50 +6,42 @@
 ## One-Time Setup
 
 ```bash
-# 1. Clone with submodules
-git clone --recurse-submodules <repo-url> themux
+# 1. Clone
+git clone <repo-url> themux
 cd themux
 
 # 2. Install system dependencies (Fedora)
 sudo dnf install rust cargo zig go python3-devel pkg-config \
     gtk4-devel webkit2gtk4.1-devel libadwaita-devel
 
-# 3. Initialize/copy external components if this is the local scaffold
-#    - ghostty/ must contain the Ghostty submodule checkout with build.zig
-#    - daemon/cmuxd-remote/ must contain the cmux Go remote daemon
+# 3. Build libghostty-vt (the core terminal emulation library)
+./scripts/build-libghostty.sh
 
-git submodule update --init --recursive
-# Copy or symlink cmux daemon source if needed:
-# cp -r <cmux-repo>/daemon/remote daemon/cmuxd-remote
-
-# 4. Run setup (builds Ghostty, cmuxd-remote, Rust workspace)
-./scripts/setup.sh
+# 4. Build Rust workspace
+cargo build --workspace
 ```
 
-- [ ] This directory is a git repository (`test -d .git` succeeds)
-- [ ] `rustc --version` shows Rust 1.85+
-- [ ] `cargo --version` succeeds
-- [ ] `zig version` shows Zig 0.14+
-- [ ] `go version` shows Go 1.22+
-- [ ] `pkg-config --modversion gtk4` succeeds
-- [ ] `pkg-config --modversion webkit2gtk-4.1` succeeds
-- [ ] `ghostty/build.zig` exists after submodule initialization
+- [x] This directory is a git repository (`test -d .git` succeeds)
+- [x] `rustc --version` shows Rust 1.85+
+- [x] `cargo --version` succeeds
+- [x] `zig version` shows Zig 0.15+
+- [x] `go version` shows Go 1.22+
+- [x] `pkg-config --modversion gtk4` succeeds
+- [x] `pkg-config --modversion webkit2gtk-4.1` succeeds
+- [x] `ghostty/build.zig` exists (vendored source)
 - [ ] `daemon/cmuxd-remote/` exists before building the daemon target
-- [ ] `./scripts/setup.sh` completes without errors
+- [x] `./scripts/build-libghostty.sh` completes without errors
 
 ### Current local setup caveats
 
-Observed on 2026-05-08 in `/home/josh/Projects/themux`:
-
-- `rustc`, `cargo`, `zig`, and `go` are not currently available in the execution PATH, so build/test commands cannot be verified from this shell yet.
-- `pkg-config` is installed, but `gtk4`, `webkit2gtk-4.1` / `webkitgtk-6.0`, and `libadwaita-1` development packages are not visible to it yet.
-- `.git/` is missing, so `git status` and submodule status checks fail until the directory is initialized/cloned as a repository.
-- `ghostty/` exists but is empty; `ghostty/build.zig` is missing.
-- `daemon/cmuxd-remote/` is missing; `scripts/setup.sh` will warn and continue, and `scripts/build.sh daemon`/`make build-daemon` will fail until it is copied in.
+Obsolete — all prerequisites are now satisfied. See [[project-structure#Current Setup Status]] for current state.
 
 ## Daily Build
 
 ```bash
+# Build libghostty-vt first (only needed if ghostty source changes)
+./scripts/build-libghostty.sh
+
 # Debug build (fast compile)
 cargo build
 
@@ -57,7 +49,8 @@ cargo build
 cargo build --release
 ```
 
-- [ ] `cargo build --workspace` passes — all 6 crates compile
+- [ ] `./scripts/build-libghostty.sh` passes — libghostty-vt builds
+- [x] `cargo build --workspace` passes — all 7 crates compile
 - [ ] `cargo build --release` passes — optimized build works
 
 ## Before Commit
@@ -98,6 +91,9 @@ pytest -v
 ## Run the App
 
 ```bash
+# Build libghostty-vt first
+./scripts/build-libghostty.sh
+
 # Debug mode
 cargo run -p themux-app
 
@@ -110,8 +106,8 @@ cargo run --release -p themux-app
 
 - [ ] GTK4 window opens
 - [ ] Sidebar visible on left
-- [ ] Terminal renders (Ghostty widget)
-- [ ] Keyboard input reaches shell
+- [ ] Terminal widget renders (libghostty-vt placeholder)
+- [ ] Keyboard input reaches terminal
 - [ ] Resize works
 - [ ] Close window exits cleanly
 
@@ -147,7 +143,8 @@ Check CI status at: `.github/workflows/ci.yml`
 | `webkit2gtk` not found | `sudo dnf install webkit2gtk4.1-devel` |
 | Stale socket file | `rm ~/.local/share/themux/themux.sock` |
 | `cargo build` slow first time | Normal — building all deps. Subsequent builds use cache. |
-| Ghostty GTK widget fails | Check Ghostty submodule: `git submodule update --init` |
+| `libghostty-vt` build fails | Check Zig version (needs >=0.15.2): `zig version`. If 0.16, install 0.15.2 from ziglang.org. |
+| `ghostty-sys` bindgen fails | Run `./scripts/build-libghostty.sh` first, then `cargo clean && cargo build` |
 | OSC tests fail | Check terminal type: must be `xterm-256color` or similar |
 
 ## Related

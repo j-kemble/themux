@@ -20,7 +20,7 @@
 ## Planning & Roadmap
 
 - [[development-roadmap]] — Master phase plan with timelines
-- [[phase-0-foundation]] — Shell app, terminal, basic socket
+- [[phase-0-foundation]] — Shell app, terminal via libghostty-vt, basic socket
 - [[phase-1-core-multiplexer]] — Workspaces, splits, sidebar, notifications
 - [[phase-2-browser-agents]] — Browser, agent hooks, SSH
 - [[phase-3-session-polish]] — Persistence, settings, quality
@@ -29,7 +29,7 @@
 ## Technical Reference
 
 - [[protocol-v2]] — V2 JSON-RPC target contract plus current implementation status
-- [[review-2026-05-08]] — Vault/project documentation review and current setup gaps
+- [[review-2026-05-08]] — Vault/project documentation review and current status
 - [Original PRD](../cmuxaltprd.md) — Linux port PRD at repo root
 - [Repo architecture doc](../docs/architecture.md) — public-facing architecture summary
 - [Repo protocol doc](../docs/protocol-v2.md) — public-facing protocol summary
@@ -40,9 +40,9 @@
 - **Repo:** `/home/josh/Projects/themux/`
 - **Vault:** `/home/josh/Projects/themux/themux-vault/`
 - **PRD:** `/home/josh/Projects/themux/cmuxaltprd.md`
-- **Build:** `cd /home/josh/Projects/themux && cargo build --workspace` or `./scripts/build.sh`
-- **Run:** `./scripts/run.sh`
-- **Test:** `./scripts/run-tests.sh` or `cargo test --workspace`
+- **Build libghostty:** `cd /home/josh/Projects/themux && ./scripts/build-libghostty.sh`
+- **Build Rust:** `cd /home/josh/Projects/themux && cargo build --workspace`
+- **Run app:** `cargo run -p themux-app`
 
 ## Related
 
