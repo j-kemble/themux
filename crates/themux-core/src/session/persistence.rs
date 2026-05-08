@@ -22,7 +22,7 @@ impl SessionPersistence {
             .join("themux");
         std::fs::create_dir_all(&data_dir).ok();
         let save_path = data_dir.join("session.json");
-        let previous_path = data_dir.join("session-previous.json");
+        let _previous_path = data_dir.join("session-previous.json");
 
         Self {
             save_path,

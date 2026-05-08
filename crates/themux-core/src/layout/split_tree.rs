@@ -1,6 +1,6 @@
 // Split tree implementation — recursive split/pane operations.
 
-use super::{Pane as PaneNode, Split, SplitDirection, SplitNode};
+use super::{Split, SplitDirection, SplitNode};
 use crate::workspace::pane::Pane;
 use crate::workspace::PaneId;
 
@@ -37,7 +37,7 @@ impl SplitTree {
             }
             SplitNode::Pane(_) => Err(SplitError::PaneNotFound),
             SplitNode::Split(split) => {
-                SplitTree::split_pane(&mut split.first, pane_id, direction, new_pane)
+                SplitTree::split_pane(&mut split.first, pane_id, direction, new_pane.clone())
                     .or_else(|_| {
                         SplitTree::split_pane(&mut split.second, pane_id, direction, new_pane)
                     })
@@ -48,8 +48,8 @@ impl SplitTree {
     /// Close a pane and collapse the tree: remove the pane, and if it was
     /// half of a split, promote the sibling to replace the split.
     pub fn close_pane(
-        root: &mut SplitNode,
-        pane_id: PaneId,
+        _root: &mut SplitNode,
+        _pane_id: PaneId,
     ) -> Result<SplitNode, SplitError> {
         // TODO: implement tree collapse on pane close
         Err(SplitError::PaneNotFound)

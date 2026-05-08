@@ -2,7 +2,6 @@
 //
 // Mirrors cmux's AppSessionSnapshot JSON structure for compatibility.
 
-use crate::workspace::Workspace;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 

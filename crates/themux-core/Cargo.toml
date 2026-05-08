@@ -18,3 +18,4 @@ rusqlite.workspace = true
 regex.workspace = true
 lazy_static.workspace = true
 tempfile.workspace = true
+tokio.workspace = true

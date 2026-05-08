@@ -7,7 +7,7 @@ type HmacSha256 = Hmac<Sha256>;
 
 /// Verify a relay token against a stored SHA-256 hash.
 pub fn verify_relay_token(token: &str, expected_hash: &str) -> bool {
-    let mut mac = HmacSha256::new_from_slice(token.as_bytes()).unwrap();
+    let mac = HmacSha256::new_from_slice(token.as_bytes()).unwrap();
     let computed = hex::encode(mac.finalize().into_bytes());
     computed == expected_hash
 }

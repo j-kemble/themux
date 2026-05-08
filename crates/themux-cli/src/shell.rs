@@ -3,6 +3,7 @@
 // Used by the tmux compatibility layer for constructing remote commands.
 
 /// Quote a string for safe use in a POSIX shell command.
+#[allow(dead_code)]
 pub fn shell_quote(s: &str) -> String {
     if s.is_empty() {
         return "''".to_string();

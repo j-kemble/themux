@@ -64,13 +64,11 @@ fn build_content() -> gtk4::Box {
     let content = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
     content.add_css_class("content");
 
-    // Placeholder terminal area
-    let terminal_placeholder = gtk4::Label::new(Some("Terminal area — Ghostty GTK widget will render here"));
-    terminal_placeholder.add_css_class("terminal-placeholder");
-    terminal_placeholder.set_vexpand(true);
-    terminal_placeholder.set_hexpand(true);
-
-    content.append(&terminal_placeholder);
+    // Terminal view (Ghostty widget placeholder for now)
+    let terminal = crate::ui::terminal_view::new();
+    terminal.set_vexpand(true);
+    terminal.set_hexpand(true);
+    content.append(&terminal);
 
     content
 }
